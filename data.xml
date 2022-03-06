@@ -14,4 +14,15 @@
         <country>RU</country>
         <age>23</age>
     </employee>
+	<test>
+		<inside>
+			    <employee>
+					<id>3</id>
+					<firstName>Masha</firstName>
+					<lastName>Ivanova</lastName>
+					<country>RU</country>
+					<age>21</age>
+				</employee>
+		</inside>
+	</test>
 </staff>
