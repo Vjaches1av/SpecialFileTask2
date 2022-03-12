@@ -5,6 +5,7 @@ import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public final class Main {
@@ -50,6 +51,15 @@ public final class Main {
         return new Gson().toJson(list, new TypeToken<List<T>>() {}.getType());
     }
 
+    private static void writeJson(File file, String json) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(file, false), StandardCharsets.UTF_8))) {
+            writer.write(json);
+            writer.flush();
+        }
+    }
+
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.print("Укажите путь к файлу *.xml, включая диск: ");
@@ -57,7 +67,14 @@ public final class Main {
             try {
                 if (file.exists() && file.isFile() && file.getName().endsWith(".xml")) {
                     List<Employee> employees = xmlToListEmployee(file);
-                    System.out.println(listObjToJson(employees));
+                    String json = listObjToJson(employees);
+                    File savePath = new File(file.getParentFile(), "data.json");
+                    try {
+                        writeJson(savePath, json);
+                        System.out.println("Результаты работы успешно записаны на диск " + savePath.getAbsolutePath());
+                    } catch (IOException e) {
+                        System.err.println("Произошла ошибка при попытке записи файла " + savePath.getAbsolutePath());
+                    }
                 } else throw new FileNotFoundException();
             } catch (FileNotFoundException e) {
                 System.err.println("Проверьте правильность указания пути и имени файла.");
